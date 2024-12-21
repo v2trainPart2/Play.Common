@@ -21,11 +21,20 @@ namespace Play.Common.HealthChecks
         {
             try
             {
-                 await client.ListDatabaseNamesAsync(cancellationToken);
-                 return HealthCheckResult.Healthy();
+                // Set a timeout for the MongoDB operation 
+                using (var timeoutCancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10))) 
+                { 
+                    using (var linkedCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token)) 
+                    { 
+                        await client.ListDatabaseNamesAsync(linkedCancellationToken.Token); 
+                        return HealthCheckResult.Healthy(); 
+                    } 
+                }               
             }
             catch (Exception ex)
             {
+                // Log detailed exception information 
+                Console.WriteLine($"Health check failed: {ex.Message}");
                 return HealthCheckResult.Unhealthy(exception: ex);
             }
         }

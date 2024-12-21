@@ -22,7 +22,7 @@ namespace Play.Common.HealthChecks
             try
             {
                 // Set a timeout for the MongoDB operation 
-                using (var timeoutCancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10))) 
+                using (var timeoutCancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30))) 
                 { 
                     using (var linkedCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token)) 
                     { 
